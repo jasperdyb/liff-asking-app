@@ -3,27 +3,16 @@ import { Tab } from '@headlessui/react'
 import EditDialog from './Dialog'
 import reactStringReplace from 'react-string-replace'
 import liff from '@line/liff'
+import { sendMessage } from '../utils'
 
 const example = {
   title: '測試問題',
-  template: '這是關於[主題]的報告內容',
-}
-const sendMessage = async (message: string) => {
-  try {
-    await liff.sendMessages([
-      {
-        type: 'text',
-        text: message,
-      },
-    ])
-  } catch (e) {
-    console.log(e)
-  }
+  template: '這是關於[主題]的報告內容,請提供[數字]種開頭方式',
 }
 
 const tabs = [
   {
-    name: 'Tab 1',
+    name: '範例問題集',
     content: (
       <div className="bg-white shadow sm:rounded-lg">
         <div className="divide-y">
@@ -58,13 +47,13 @@ const tabs = [
       </div>
     ),
   },
-  { name: 'Tab 2', content: 'Content 2' },
+  // { name: 'Tab 2', content: 'Content 2' },
 ]
 
 function MyTabs() {
   return (
     <Tab.Group>
-      <Tab.List>
+      <Tab.List className={'border-b border-gray-400'}>
         {tabs.map((tab) => (
           <Tab as={Fragment} key={tab.name}>
             {({ selected }) => (

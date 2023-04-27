@@ -16,7 +16,7 @@ function App() {
   return (
     <FilterContext.Provider value={filter}>
       <div className="bg-slate-100 h-screen">
-        <div className="w-full p-4 justify-center items-center">
+        <div className="w-full p-4 justify-center text-center">
           <div>這是一串測試文字</div>
         </div>
         <Tabs />

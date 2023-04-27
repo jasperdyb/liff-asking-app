@@ -4,21 +4,8 @@ import { Fragment, useState } from 'react'
 
 import EditTextDialog from './EditTextDialog'
 import reactStringReplace from 'react-string-replace'
+import { sendMessage } from '../utils'
 
-import liff from '@line/liff'
-
-const sendMessage = async (message: string) => {
-  try {
-    await liff.sendMessages([
-      {
-        type: 'text',
-        text: message,
-      },
-    ])
-  } catch (e) {
-    console.log(e)
-  }
-}
 const MyModal: React.FC<{
   title: string
   template: string
@@ -28,6 +15,7 @@ const MyModal: React.FC<{
 
   const [editableTemplate, setEditableTemplate] = useState<
     {
+      originalText: string
       text: string
       editable: boolean
     }[]
@@ -37,8 +25,8 @@ const MyModal: React.FC<{
     const newTemplate = [...editableTemplate]
 
     newTemplate[index] = {
+      ...newTemplate[index],
       text,
-      editable: true,
     }
 
     setEditableTemplate(newTemplate)
@@ -46,6 +34,7 @@ const MyModal: React.FC<{
 
   React.useEffect(() => {
     const newTemplate = reactStringReplace(template, /\[(.*?)\]/g, (match) => ({
+      originalText: match,
       text: match,
       editable: true,
     })).map((item) => {
@@ -127,6 +116,7 @@ const MyModal: React.FC<{
                             <EditTextDialog
                               key={index}
                               text={item.text}
+                              originalText={item.originalText}
                               onTextChange={(text) =>
                                 onChangeTemplate(text, index)
                               }
@@ -143,14 +133,14 @@ const MyModal: React.FC<{
                     <button
                       type="button"
                       className="p-2 flex-1 text-center"
-                      onClick={onAsk}>
-                      問這題
+                      onClick={closeModal}>
+                      取消
                     </button>
                     <button
                       type="button"
                       className="p-2 flex-1 text-center"
-                      onClick={closeModal}>
-                      取消
+                      onClick={onAsk}>
+                      問這題
                     </button>
                   </div>
                 </Dialog.Panel>

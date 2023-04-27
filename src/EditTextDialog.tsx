@@ -3,9 +3,10 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 
 const EditTextDialog: React.FC<{
+  originalText: string
   text: string
   onTextChange?: (text: string) => void
-}> = ({ text, onTextChange }) => {
+}> = ({ text, onTextChange, originalText }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   function closeModal() {
@@ -14,6 +15,15 @@ const EditTextDialog: React.FC<{
 
   function openModal() {
     setIsOpen(true)
+  }
+
+  function onConfirm() {
+    closeModal()
+  }
+
+  function onCancel() {
+    onTextChange && onTextChange(originalText)
+    closeModal()
   }
 
   return (
@@ -48,13 +58,36 @@ const EditTextDialog: React.FC<{
                 leave="ease-in duration-200"
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95">
-                <Dialog.Panel className="max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <input
-                    value={text}
-                    onChange={(e) =>
-                      onTextChange && onTextChange(e.target.value)
-                    }
-                  />
+                <Dialog.Panel className="max-w-md transform divide-y overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all">
+                  <div className="px-6 py-3">
+                    <input
+                      value={text}
+                      onChange={(e) =>
+                        onTextChange && onTextChange(e.target.value)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          onConfirm()
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="flex divide-x">
+                    <button
+                      type="button"
+                      className="p-2 flex-1 text-center"
+                      onClick={() => {
+                        onCancel()
+                      }}>
+                      取消
+                    </button>
+                    <button
+                      type="button"
+                      className="p-2 flex-1 text-center"
+                      onClick={onConfirm}>
+                      確認
+                    </button>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
